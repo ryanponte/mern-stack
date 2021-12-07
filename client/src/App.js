@@ -11,6 +11,8 @@ import Register from './components/auth/Register';
 import Alert from './components/layout/Alert';
 import Dashboard from './components/dashboard/Dashboard';
 import ProfileForm from './components/profile-forms/ProfileForm';
+import AddExperience from './components/profile-forms/AddExperience';
+import AddEducation from './components/profile-forms/AddEducation';
 import PrivateRoute from './components/routing/PrivateRoute';
 import { LOGOUT } from './actions/types';
 
@@ -62,6 +64,18 @@ const App = () => {
             path='edit-profile'
             element={
               <PrivateRoute component={ProfileForm} />
+            }
+          />
+          <Route
+            path='add-experience'
+            element={
+              <PrivateRoute component={AddExperience} />
+            }
+          />
+          <Route
+            path='add-education'
+            element={
+              <PrivateRoute component={AddEducation} />
             }
           />
         </Routes>
