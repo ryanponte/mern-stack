@@ -1,6 +1,8 @@
 import {
   GET_PROFILE,
   GET_PROFILES,
+  GET_REPOS,
+  NO_REPOS,
   UPDATE_PROFILE,
   CLEAR_PROFILE,
   PROFILE_ERROR,
@@ -42,6 +44,18 @@ const profileReducer = (state = initialState, action) => {
         ...state,
         error: payload,
         loading: false,
+        profile: null,
+      };
+    case GET_REPOS:
+      return {
+        ...state,
+        repos: payload,
+        loading: false,
+      };
+    case NO_REPOS:
+      return {
+        ...state,
+        repos: [],
       };
     default:
       return state;
