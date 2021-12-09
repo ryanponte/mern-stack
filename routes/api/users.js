@@ -1,25 +1,23 @@
-const express = require('express');
-const router = express.Router();
-const gravatar = require('gravatar');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const config = require('config');
-const {
-  check,
-  validationResult,
-} = require('express-validator');
-const normalize = require('normalize-url');
+import express from 'express';
+import gravatar from 'gravatar';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import normalizeUrl from 'normalize-url';
+import { body, validationResult } from 'express-validator';
 
-const User = require('../../models/User');
+import models from '../../models/index.js';
+
+const { User } = models;
+const router = express.Router();
 
 // @route    POST api/users
 // @desc     Register user
 // @access   Public
 router.post(
   '/',
-  check('name', 'Name is required').notEmpty(),
-  check('email', 'Please include a valid email').isEmail(),
-  check(
+  body('name', 'Name is required').notEmpty(),
+  body('email', 'Please include a valid email').isEmail(),
+  body(
     'password',
     'Please enter a password with 6 or more characters'
   ).isLength({ min: 6 }),
@@ -37,14 +35,12 @@ router.post(
       let user = await User.findOne({ email });
 
       if (user) {
-        return res
-          .status(400)
-          .json({
-            errors: [{ msg: 'User already exists' }],
-          });
+        return res.status(400).json({
+          errors: [{ msg: 'User already exists' }],
+        });
       }
 
-      const avatar = normalize(
+      const avatar = normalizeUrl(
         gravatar.url(email, {
           s: '200',
           r: 'pg',
@@ -74,7 +70,7 @@ router.post(
 
       jwt.sign(
         payload,
-        config.get('jwtSecret'),
+        process.env.JWT_SECRET,
         { expiresIn: '5 days' },
         (err, token) => {
           if (err) throw err;
@@ -88,4 +84,4 @@ router.post(
   }
 );
 
-module.exports = router;
+export default router;

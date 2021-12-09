@@ -1,113 +1,85 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const ProfileSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'user'
+    ref: 'user',
   },
-  company: {
-    type: String
-  },
-  website: {
-    type: String
-  },
-  location: {
-    type: String
-  },
+  company: String,
+  website: String,
+  location: String,
   status: {
     type: String,
-    required: true
+    required: true,
   },
   skills: {
     type: [String],
-    required: true
+    required: true,
   },
-  bio: {
-    type: String
-  },
-  githubusername: {
-    type: String
-  },
+  bio: String,
+  githubusername: String,
   experience: [
     {
       title: {
         type: String,
-        required: true
+        required: true,
       },
       company: {
         type: String,
-        required: true
+        required: true,
       },
-      location: {
-        type: String
-      },
+      location: String,
       from: {
         type: Date,
-        required: true
+        required: true,
       },
-      to: {
-        type: Date
-      },
+      to: Date,
       current: {
         type: Boolean,
-        default: false
+        default: false,
       },
-      description: {
-        type: String
-      }
-    }
+      description: String,
+    },
   ],
   education: [
     {
       school: {
         type: String,
-        required: true
+        required: true,
       },
       degree: {
         type: String,
-        required: true
+        required: true,
       },
       fieldofstudy: {
         type: String,
-        required: true
+        required: true,
       },
       from: {
         type: Date,
-        required: true
+        required: true,
       },
-      to: {
-        type: Date
-      },
+      to: Date,
       current: {
         type: Boolean,
-        default: false
+        default: false,
       },
-      description: {
-        type: String
-      }
-    }
+      description: String,
+    },
   ],
   social: {
-    youtube: {
-      type: String
-    },
-    twitter: {
-      type: String
-    },
-    facebook: {
-      type: String
-    },
-    linkedin: {
-      type: String
-    },
-    instagram: {
-      type: String
-    }
+    youtube: String,
+    twitter: String,
+    facebook: String,
+    linkedin: String,
+    instagram: String,
   },
   date: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model('profile', ProfileSchema);
+const Profile = mongoose.model('profile', ProfileSchema);
+
+export default Profile;

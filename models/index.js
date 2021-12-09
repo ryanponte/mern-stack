@@ -1,5 +1,10 @@
 import mongoose from 'mongoose';
 
+import User from './User.js';
+import Post from './Post.js';
+import Profile from './Profile.js';
+
+// Connect Database
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.DB_CONNECTION, {
@@ -17,4 +22,8 @@ const connectDB = async () => {
   }
 };
 
-export default connectDB;
+const models = { User, Post, Profile };
+
+export { connectDB };
+
+export default models;
