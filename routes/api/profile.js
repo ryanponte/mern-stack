@@ -1,17 +1,15 @@
 import express from 'express';
 import axios from 'axios';
-import validator from 'express-validator';
+import { body, validationResult } from 'express-validator';
 // bring in normalize to give us a proper url, regardless of what user entered
 import normalize from 'normalize-url';
 
 import auth from '../../middleware/auth.js';
 import checkObjectId from '../../middleware/checkObjectId.js';
 
-import Profile from '../../models/Profile.js';
-import User from '../../models/User.js';
-import Post from '../../models/Post.js';
+import models from '../../models/index.js';
 
-const { check, validationResult } = validator;
+const { User, Post, Profile } = models;
 const router = express.Router();
 
 // @route    GET api/profile/me
@@ -42,8 +40,8 @@ router.get('/me', auth, async (req, res) => {
 router.post(
   '/',
   auth,
-  check('status', 'Status is required').notEmpty(),
-  check('skills', 'Skills is required').notEmpty(),
+  body('status', 'Status is required').notEmpty(),
+  body('skills', 'Skills is required').notEmpty(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -188,9 +186,9 @@ router.delete('/', auth, async (req, res) => {
 router.put(
   '/experience',
   auth,
-  check('title', 'Title is required').notEmpty(),
-  check('company', 'Company is required').notEmpty(),
-  check(
+  body('title', 'Title is required').notEmpty(),
+  body('company', 'Company is required').notEmpty(),
+  body(
     'from',
     'From date is required and needs to be from the past'
   )
@@ -256,13 +254,13 @@ router.delete(
 router.put(
   '/education',
   auth,
-  check('school', 'School is required').notEmpty(),
-  check('degree', 'Degree is required').notEmpty(),
-  check(
+  body('school', 'School is required').notEmpty(),
+  body('degree', 'Degree is required').notEmpty(),
+  body(
     'fieldofstudy',
     'Field of study is required'
   ).notEmpty(),
-  check(
+  body(
     'from',
     'From date is required and needs to be from the past'
   )
