@@ -5,15 +5,9 @@ const ProfileSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
   },
-  company: {
-    type: String,
-  },
-  website: {
-    type: String,
-  },
-  location: {
-    type: String,
-  },
+  company: String,
+  website: String,
+  location: String,
   status: {
     type: String,
     required: true,
@@ -22,12 +16,8 @@ const ProfileSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
-  bio: {
-    type: String,
-  },
-  githubusername: {
-    type: String,
-  },
+  bio: String,
+  githubusername: String,
   experience: [
     {
       title: {
@@ -38,23 +28,17 @@ const ProfileSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
-      location: {
-        type: String,
-      },
+      location: String,
       from: {
         type: Date,
         required: true,
       },
-      to: {
-        type: Date,
-      },
+      to: Date,
       current: {
         type: Boolean,
         default: false,
       },
-      description: {
-        type: String,
-      },
+      description: String,
     },
   ],
   education: [
@@ -75,34 +59,20 @@ const ProfileSchema = new mongoose.Schema({
         type: Date,
         required: true,
       },
-      to: {
-        type: Date,
-      },
+      to: Date,
       current: {
         type: Boolean,
         default: false,
       },
-      description: {
-        type: String,
-      },
+      description: String,
     },
   ],
   social: {
-    youtube: {
-      type: String,
-    },
-    twitter: {
-      type: String,
-    },
-    facebook: {
-      type: String,
-    },
-    linkedin: {
-      type: String,
-    },
-    instagram: {
-      type: String,
-    },
+    youtube: String,
+    twitter: String,
+    facebook: String,
+    linkedin: String,
+    instagram: String,
   },
   date: {
     type: Date,
@@ -110,6 +80,6 @@ const ProfileSchema = new mongoose.Schema({
   },
 });
 
-const Post = mongoose.model('post', ProfileSchema);
+const Profile = mongoose.model('profile', ProfileSchema);
 
 export default Profile;

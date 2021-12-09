@@ -1,26 +1,19 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
+import 'dotenv/config';
+import cors from 'cors';
 import express from 'express';
 import * as path from 'path';
 
-import models, { connectDB } from './models/index.js';
+import { connectDB } from './models/index.js';
 import routes from './routes/api/index.js';
 
 const app = express();
+
+app.use(cors());
 
 connectDB();
 
 // Init Middleware
 app.use(express.json());
-
-app.use((req, res, next) => {
-  req.context = {
-    models,
-    me: models.users[1],
-  };
-  next();
-});
 
 // Define Routes
 app.use('/api/users', routes.users);

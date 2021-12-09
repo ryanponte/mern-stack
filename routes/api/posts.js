@@ -1,13 +1,12 @@
 import express from 'express';
-import validator from 'express-validator';
+import { body, validationResult } from 'express-validator';
 
 import auth from '../../middleware/auth.js';
 import checkObjectId from '../../middleware/checkObjectId.js';
 
-import Post from '../../models/Post.js';
-import User from '../../models/User.js';
+import models from '../../models/index.js';
 
-const { check, validationResult } = validator;
+const { User, Post } = models;
 const router = express.Router();
 
 // @route    POST api/posts
@@ -16,7 +15,7 @@ const router = express.Router();
 router.post(
   '/',
   auth,
-  check('text', 'Text is required').notEmpty(),
+  body('text', 'Text is required').notEmpty(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -198,7 +197,7 @@ router.post(
   '/comment/:id',
   auth,
   checkObjectId('id'),
-  check('text', 'Text is required').notEmpty(),
+  body('text', 'Text is required').notEmpty(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

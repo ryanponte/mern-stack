@@ -3,11 +3,11 @@ import gravatar from 'gravatar';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import normalizeUrl from 'normalize-url';
-import validator from 'express-validator';
+import { body, validationResult } from 'express-validator';
 
-import User from '../../models/User.js';
+import models from '../../models/index.js';
 
-const { check, validationResult } = validator;
+const { User } = models;
 const router = express.Router();
 
 // @route    POST api/users
@@ -15,9 +15,9 @@ const router = express.Router();
 // @access   Public
 router.post(
   '/',
-  check('name', 'Name is required').notEmpty(),
-  check('email', 'Please include a valid email').isEmail(),
-  check(
+  body('name', 'Name is required').notEmpty(),
+  body('email', 'Please include a valid email').isEmail(),
+  body(
     'password',
     'Please enter a password with 6 or more characters'
   ).isLength({ min: 6 }),
