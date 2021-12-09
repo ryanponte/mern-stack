@@ -1,7 +1,15 @@
-import React, { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { Link, Navigate } from 'react-router-dom';
+import { setAlert } from '../../actions/alert';
+import { register } from '../../actions/auth';
+import PropTypes from 'prop-types';
 
-const Register = () => {
+const Register = ({
+  setAlert,
+  register,
+  isAuthenticated,
+}) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,17 +25,21 @@ const Register = () => {
       [e.target.name]: e.target.value,
     });
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
     if (password !== password2) {
-      console.log('Passwords do not match');
+      setAlert('Passwords do not match', 'danger');
     } else {
-      console.log('SUCCESS');
+      register({ name, email, password });
     }
   };
 
+  if (isAuthenticated) {
+    return <Navigate to='/dashboard' />;
+  }
+
   return (
-    <Fragment>
+    <>
       <section className='container'>
         <h1 className='large text-primary'>Sign Up</h1>
         <p className='lead'>
@@ -45,7 +57,6 @@ const Register = () => {
               name='name'
               value={name}
               onChange={(e) => onChange(e)}
-              required
             />
           </div>
           <div className='form-group'>
@@ -66,7 +77,6 @@ const Register = () => {
               type='password'
               placeholder='Password'
               name='password'
-              minLength='6'
               value={password}
               onChange={(e) => onChange(e)}
             />
@@ -76,7 +86,6 @@ const Register = () => {
               type='password'
               placeholder='Confirm Password'
               name='password2'
-              minLength='6'
               value={password2}
               onChange={(e) => onChange(e)}
             />
@@ -92,8 +101,21 @@ const Register = () => {
           <Link to='/login'>Sign In</Link>
         </p>
       </section>
-    </Fragment>
+    </>
   );
 };
 
-export default Register;
+Register.propTypes = {
+  setAlert: PropTypes.func.isRequired,
+  register: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
+};
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, {
+  setAlert,
+  register,
+})(Register);

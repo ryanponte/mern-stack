@@ -1,33 +1,26 @@
-const express = require('express');
+import express from 'express';
+import gravatar from 'gravatar';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import normalizeUrl from 'normalize-url';
+import { body, validationResult } from 'express-validator';
+
+import models from '../../models/index.js';
+
+const { User } = models;
 const router = express.Router();
-const gravatar = require('gravatar');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const config = require('config');
-const {
-  check,
-  validationResult,
-} = require('express-validator');
 
-// User Model
-const User = require('../../models/User');
-
-// @route   POST api/users
-// @desc    Register user
-// @access  Public
+// @route    POST api/users
+// @desc     Register user
+// @access   Public
 router.post(
   '/',
-  [
-    check('name', 'Name is required').not().isEmpty(),
-    check(
-      'email',
-      'Please include a valid email'
-    ).isEmail(),
-    check(
-      'password',
-      'Please enter a password with 6 or more characters'
-    ).isLength({ min: 6 }),
-  ],
+  body('name', 'Name is required').notEmpty(),
+  body('email', 'Please include a valid email').isEmail(),
+  body(
+    'password',
+    'Please enter a password with 6 or more characters'
+  ).isLength({ min: 6 }),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -39,7 +32,6 @@ router.post(
     const { name, email, password } = req.body;
 
     try {
-      // Check if user exists
       let user = await User.findOne({ email });
 
       if (user) {
@@ -48,12 +40,14 @@ router.post(
         });
       }
 
-      // Get user gravatar
-      const avatar = gravatar.url(email, {
-        s: '200',
-        r: 'pg',
-        d: 'mm',
-      });
+      const avatar = normalizeUrl(
+        gravatar.url(email, {
+          s: '200',
+          r: 'pg',
+          d: 'mm',
+        }),
+        { forceHttps: true }
+      );
 
       user = new User({
         name,
@@ -62,13 +56,12 @@ router.post(
         password,
       });
 
-      // Encrypt password
       const salt = await bcrypt.genSalt(10);
+
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
 
-      // Return jsonwebtoken
       const payload = {
         user: {
           id: user.id,
@@ -77,10 +70,8 @@ router.post(
 
       jwt.sign(
         payload,
-        config.get('jwtSecret'),
-        {
-          expiresIn: 360000,
-        },
+        process.env.JWT_SECRET,
+        { expiresIn: '5 days' },
         (err, token) => {
           if (err) throw err;
           res.json({ token });
@@ -93,4 +84,4 @@ router.post(
   }
 );
 
-module.exports = router;
+export default router;
